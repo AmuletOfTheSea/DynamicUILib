@@ -4808,3 +4808,6 @@ local function DynamicUI()
         return Window
     end
     return Library
+end
+
+return DynamicUI()
