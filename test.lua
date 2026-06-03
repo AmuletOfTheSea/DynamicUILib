@@ -30,6 +30,14 @@ local Services = {
 local Assets = {
     GetFont = function(self, name)
         return Font.new("rbxasset://fonts/families/GothamSSm.json")
+    end,
+    GetImage = function(self, path)
+        -- Returns empty string (no custom images in this version)
+        return ""
+    end,
+    GetSound = function(self, path)
+        -- Returns nil (no custom sounds in this version)
+        return nil
     end
 }
 
@@ -753,22 +761,33 @@ local function DynamicUI()
     local SessionId = getgenv().DynamicSessionId
 
     local ProtectGui = syn and syn.protect_gui or protectgui
-    local Cleanup = {
-        { Parent = Services.CoreGui, Name = "DynamicUI" },
-        { Parent = Services.CoreGui, Name = "DynamicHUD" },
-        { Parent = Services.CoreGui, Name = "DynamicCursorGui" },
-        { Parent = Services.Players.LocalPlayer:WaitForChild("PlayerGui"), Name = "MouseUnlockerGui" },
-    }
-
-    for _, Item in ipairs(Cleanup) do
-        local Gui = Item.Parent:FindFirstChild(Item.Name)
-        if Gui then
-            if Item.Name == "DynamicUI" and Library.DisableAllModules then
-                Library.DisableAllModules()
-            end
-            Gui:Destroy()
+    
+    -- Clean up old GUI elements (wrapped in pcall for safety)
+    pcall(function()
+        local Cleanup = {
+            { Parent = Services.CoreGui, Name = "DynamicUI" },
+            { Parent = Services.CoreGui, Name = "DynamicHUD" },
+            { Parent = Services.CoreGui, Name = "DynamicCursorGui" },
+        }
+        
+        -- Only add PlayerGui cleanup if LocalPlayer is available
+        local LocalPlayer = Services.Players and Services.Players.LocalPlayer
+        if LocalPlayer then
+            table.insert(Cleanup, { Parent = LocalPlayer:WaitForChild("PlayerGui"), Name = "MouseUnlockerGui" })
         end
-    end
+
+        for _, Item in ipairs(Cleanup) do
+            if Item.Parent then
+                local Gui = Item.Parent:FindFirstChild(Item.Name)
+                if Gui then
+                    if Item.Name == "DynamicUI" and Library.DisableAllModules then
+                        Library.DisableAllModules()
+                    end
+                    Gui:Destroy()
+                end
+            end
+        end
+    end)
 
     local GuiConfigs = {
         DynamicUI = {
