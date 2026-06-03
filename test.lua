@@ -206,9 +206,10 @@ Services.RunService.RenderStepped:Connect(function(DeltaTime)
 	ResolveThemeColors()
 
 	local Mode = Library.Flags.Interface_Style or "Flow"
+	local Speed = Library.Flags.Interface_Speed or 1
 
 	if Mode ~= "Static" then
-		RainbowOffset = (RainbowOffset + DeltaTime * Library.Flags.Interface_Speed) % 1
+		RainbowOffset = (RainbowOffset + DeltaTime * Speed) % 1
 	end
 
 	for Gradient in pairs(ActiveGradients) do
@@ -222,7 +223,7 @@ Services.RunService.RenderStepped:Connect(function(DeltaTime)
 		if Mode == "Flow" or Mode == "Flux" then
 			Offset = RainbowOffset
 		elseif Mode == "Breath" then
-			Offset = 0.5 + 0.5 * math.sin(tick() * Library.Flags.Interface_Speed * math.pi * 2)
+			Offset = 0.5 + 0.5 * math.sin(tick() * Speed * math.pi * 2)
 		elseif Mode == "Static" then
 			Offset = 0
 		end
