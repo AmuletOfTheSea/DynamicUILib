@@ -20,6 +20,11 @@ local Services = {
     TextService = game:GetService("TextService"),
     TweenService = game:GetService("TweenService"),
     UserInputService = game:GetService("UserInputService"),
+    Players = game:GetService("Players"),
+    HttpService = game:GetService("HttpService"),
+    SoundService = game:GetService("SoundService"),
+    Lighting = game:GetService("Lighting"),
+    GuiService = game:GetService("GuiService"),
 }
 
 local Assets = {
